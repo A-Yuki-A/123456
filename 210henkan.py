@@ -7,44 +7,30 @@ Original file is located at
     https://colab.research.google.com/drive/1zgKTCtBiD3344RhfPLd0gyEyIxFlHjDl
 """
 
-import tkinter as tk
-from tkinter import messagebox
+import streamlit as st
 
-def convert():
-    try:
-        input_value = entry.get()
-        if conversion_type.get() == "10進数 → 2進数":
-            result = bin(int(input_value))[2:]  # 10進数を2進数に変換
-        elif conversion_type.get() == "2進数 → 10進数":
-            result = int(input_value, 2)  # 2進数を10進数に変換
-        else:
-            result = "変換タイプを選択してください"
-        output_label.config(text=f"結果: {result}")
-    except ValueError:
-        messagebox.showerror("エラー", "正しい値を入力してください")
+# タイトル
+st.title("2進数・10進数変換アプリ")
 
-# GUIウィンドウの設定
-root = tk.Tk()
-root.title("2進数・10進数変換アプリ")
-
-# 変換タイプ選択
-conversion_type = tk.StringVar(value="10進数 → 2進数")
-tk.Label(root, text="変換タイプを選択してください:").pack()
-tk.Radiobutton(root, text="10進数 → 2進数", variable=conversion_type, value="10進数 → 2進数").pack()
-tk.Radiobutton(root, text="2進数 → 10進数", variable=conversion_type, value="2進数 → 10進数").pack()
+# 変換タイプの選択
+conversion_type = st.radio(
+    "変換タイプを選択してください:",
+    ("10進数 → 2進数", "2進数 → 10進数")
+)
 
 # 入力フィールド
-tk.Label(root, text="値を入力してください:").pack()
-entry = tk.Entry(root)
-entry.pack()
+input_value = st.text_input("値を入力してください:")
 
 # 変換ボタン
-convert_button = tk.Button(root, text="変換", command=convert)
-convert_button.pack()
-
-# 出力ラベル
-output_label = tk.Label(root, text="結果: ")
-output_label.pack()
-
-# メインループ
-root.mainloop()
+if st.button("変換"):
+    try:
+        if conversion_type == "10進数 → 2進数":
+            # 入力を10進数として2進数に変換
+            result = bin(int(input_value))[2:]
+            st.success(f"結果: {result}")
+        elif conversion_type == "2進数 → 10進数":
+            # 入力を2進数として10進数に変換
+            result = int(input_value, 2)
+            st.success(f"結果: {result}")
+    except ValueError:
+        st.error("正しい値を入力してください。")
